@@ -1,0 +1,183 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var mongoose = require('mongoose');
+var app = require('../app');
+var debug = require('debug')('MedHacksBackend:server');
+var http = require('http');
+
+var Schema = mongoose.Schema;
+
+var medhacksSchema = new Schema({
+    duration: String,
+    stream: [{1: String, 2: String}]
+});
+
+var json_GET = "{\"duration\": 100.2323,\"stream\": [{\"id\": 1,\"values1\": 123123113245,\"values2\": 234223824733},{\"id\": 2,\"values1\": 283718378317371,\"values2\": 23823837287318}]";
+var fs = require('fs');
+var path = require('path');
+var response = require("fs");
+process.stdout.write("DIRNAME: " + __dirname);
+var filePath = path.join(__dirname, 'document.json');
+
+//reading & writting file
+fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data)
+{
+    if (!err)
+    {
+        console.log("Logging this as " + data);
+        var jsonObject = JSON.parse(data);
+        console.log("This should be data value " + jsonObject.stream[0].values1);
+        saveFile("dataset\\" + "test1.json", data);
+    } else
+    {
+        console.log(err);
+    }
+});
+
+mongoose.connect('mongodb://localhost/medhacks');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function ()
+{
+    process.stdout.write(" CONNECTED! ");
+});
+
+//updating mongoDB
+var modelRow = db.model('MedHacks', medhacksSchema);
+modelRow.update({name: 'test1'}, {$pushAll: {json_GET}}, {upsert: true}, function (err)
+{
+    if (err)
+    {
+        console.log(err);
+    } else
+    {
+        console.log(" Successfully added ");
+    }
+});
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val)
+{
+    var port = parseInt(val, 10);
+
+    if (isNaN(port))
+    {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0)
+    {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error)
+{
+    if (error.syscall !== 'listen')
+    {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code)
+    {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening()
+{
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
+
+/**
+ * Saves a file
+ * */
+function saveFile(filename, data)
+{
+    var fs = require('fs');
+    fs.writeFile(filename, data, function (err)
+    {
+        if (err)
+        {
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+    });
+}
+
+/**
+ * Stringifies and posts a string
+ * */
+function post(jsonValue)
+{
+    var request = require('request');
+    var stringifiedValue = JSON.stringify(jsonValue);
+    request.post(
+        'http://www.yoursite.com/formpage', stringifiedValue,
+        function (error, response, body)
+        {
+            if (!error && response.statusCode == 200)
+            {
+                console.log(body);
+            }
+        }
+    );
+}
