@@ -1,11 +1,9 @@
 "use strict";
 console.log("Hello");
 
-define(function (require) {
-	var React = require('react');
-	var ReactDOM = require('react-dom');
-	var BarChart = require('react-d3-basic').BarChart;
-});
+var React = require('react');
+var ReactDOM = require('react-dom');
+var BarChart = require('react-d3-basic').BarChart;
 
 var BarGraph = React.createClass({
 	getInitialState: function() {
