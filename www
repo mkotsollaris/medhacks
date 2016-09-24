@@ -205,10 +205,23 @@ function Request(id, valArray)
  * Request Example: www.mydomain.com/id=120&val1=12&val2=42&val3=32&val4=12&val5=42&val6=82&val7=91&val8=81&val9=62&val10=41&val11=12
  */
 var server = http.createServer();
-server.on('request', function (request, response)
+server.on('request', function (request)
 {
-    var method = request.method;
-    var url = request.url;
+    var id = request.query.id; // $_GET["id"]
+    var val1 = request.query.val1;
+    var val2 = request.query.val2;
+    var val3 = request.query.val3;
+    var val4 = request.query.val4;
+    var val5 = request.query.val5;
+    var val6 = request.query.val6;
+    var val7 = request.query.val7;
+    var val8 = request.query.val8;
+    var val9 = request.query.val9;
+    var val10 = request.query.val10;
+    var val11 = request.query.val11;
+    var valArray = [val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11];
+    var myRequest = Request(id, valArray);
+    //TODO save in DB and post data on the mobile
 });
 
 method.getID = function ()
