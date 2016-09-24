@@ -3,7 +3,7 @@
  */
 
 var app = require('express');
-var http = requre('http').Server(app);
+var http = require('http').Server(app);
 
 var OpenBCIBoard = require('openbci').OpenBCIBoard;
 var ourBoard = new OpenBCIBoard();
