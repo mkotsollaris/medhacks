@@ -4,18 +4,19 @@
  * Module dependencies.
  */
 
+var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var app = require('../app');
 var debug = require('debug')('MedHacksBackend:server');
 var http = require('http');
-
 var Schema = mongoose.Schema;
+
+app.use(bodyParser.json()); // to support JSON-encoded bodies
 
 var medhacksSchema = new Schema({
     duration: String,
     stream: [{1: String, 2: String}]
 });
-
 var json_GET = "{\"duration\": 100.2323,\"stream\": [{\"id\": 1,\"values1\": 123123113245,\"values2\": 234223824733},{\"id\": 2,\"values1\": 283718378317371,\"values2\": 23823837287318}]";
 var fs = require('fs');
 var path = require('path');
@@ -169,7 +170,7 @@ function saveFile(filename, data)
 function post(jsonValue)
 {
     var request = require('request');
-    var stringifiedValue = JSON.stringify(jsonValue);
+    var stringifiedValue = JSON.stringify(jsonValue) + "\\n";
     request.post(
         'http://www.yoursite.com/formpage', stringifiedValue,
         function (error, response, body)
@@ -181,3 +182,36 @@ function post(jsonValue)
         }
     );
 }
+
+var request = Request.prototype;
+function Request(id, valArray)
+{
+    this._id = id;
+    this._val1 = valrArray[1];
+    this._val2 = valrArray[2];
+    this._val3 = valrArray[3];
+    this._val4 = valrArray[4];
+    this._val5 = valrArray[5];
+    this._val6 = valrArray[6];
+    this._val7 = valrArray[7];
+    this._val8 = valrArray[8];
+    this._val9 = valrArray[9];
+    this._val10 = valrArray[10];
+    this._val11 = valrArray[11];
+}
+
+/**
+ * handling the HTTP Request
+ * Request Example: www.mydomain.com/id=120&val1=12&val2=42&val3=32&val4=12&val5=42&val6=82&val7=91&val8=81&val9=62&val10=41&val11=12
+ */
+var server = http.createServer();
+server.on('request', function (request, response)
+{
+    var method = request.method;
+    var url = request.url;
+});
+
+method.getID = function ()
+{
+    return this._id;
+};
